@@ -1,0 +1,53 @@
+<button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">add item</button>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post">
+          {{form.hidden_tag()}}
+          <p>
+            {{form.name.label}}<br>
+            {{form.name(size=32)}}
+          </p>
+            {{form.destination.label}}<br>
+            {{form.destination(size=32)}}
+          </p>
+          <p>
+            {{form.quantity.label}}<br>
+            {{form.quantity(size=32)}}
+          </p>
+          <p>
+            {{form.r_email.label}}<br>
+            {{form.r_email(size=32)}}
+          </p>
+          <p>
+            {{form.id_no.label}}<br>
+            {{form.id_no(size=32)}}
+          </p>
+          <p>
+            {{form.phone_no.label}}<br>
+            {{form.phone_no(size=32)}}
+          </p>
+          <p>
+            {{form.body.label}}<br>
+            {{form.body(cols=50, rows=4)}}
+          </p>
+          <p>{{ form.submit()}}</p>
+        </form>
+      </div>
+      <!--
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>-->
+    </div>
+  </div>
+</div>

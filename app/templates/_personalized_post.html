@@ -1,0 +1,33 @@
+<div class="card poster-card">
+    <div class="post-body">
+        <div class="card-block">
+            <table class="table card-text">
+                <th><span>Item</span></th>
+                <tr>
+                    <td><b>Item name:</b></td><td>{{post.name}}</td>
+                </tr>
+                <tr>
+                    <td><b>Quantity:</b></td><td>{{post.quantity}}</td>
+                <tr>
+                    <td><b>Destination:</b></td><td>{{post.destination}}</td>
+                </tr>
+                <th><span > Recipient's details</span></th>
+                <tr>
+                    <td><b>Recipient :</b></td><td>{{post.r_email}}</td>
+                </tr>
+                <tr>
+                    <td><b>ID No:</b></td><td>{{post.id_no}}</td>
+                </tr>
+                <tr>
+                    <td><b>Phone no:</b></td><td>{{post.phone_no}}</td>
+                </tr>
+                <tr>
+                    {%if post.body %}
+                        <td><b>Other:</b></td><td>{{post.post}}</td>
+                    {%endif%}
+                </tr>
+            </table>
+        </div>
+        <div class="card-footer"><p class="card-text pull-right">Sent: {{moment(post.timestamp).fromNow()}}</p></div>
+    </div>
+</div>
