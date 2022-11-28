@@ -12,7 +12,7 @@ print(parent)
 
 #WILL BE USED TO SAVE IMAGES   
 #locate a directory and add file to it
-def file_loc(folder):
+def folder_loc(folder):
     """takes a folder name(this folder is in parent directory) and return string representation of its location"""
     basedir=os.path.dirname(__file__)
     parent=os.path.dirname(basedir)
@@ -22,12 +22,12 @@ def file_loc(folder):
     else:
         return file_folder
     
-f=file_loc("static")
-print(f"Images folder is {f}")
 
+
+#FIND FILES
 #list file paths
-def files_path(file_dir_name):
-    """Takes directory and lists the file paths."""
+def find_file(file_dir_name):
+    """Takes directory name and returns a list of zip of directory name and file name in that directory."""
     f_=os.listdir(file_dir_name)
     files_list=[]
     files_names=[]
@@ -39,8 +39,6 @@ def files_path(file_dir_name):
     file_n=list(zip(files_list,files_names))
     return file_n
 
-f='__pycache__'
-#print(files_path(f))
 
 
 gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
