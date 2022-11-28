@@ -1,35 +1,66 @@
 
 import googlemaps
+from datetime import datetime, timedelta
 
 gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
 
-#short form of address, such as country + postal code
-geocode_result = gmaps.geocode('singapore 018956')
 
-#full address
-geocode_result = gmaps.geocode("10 Bayfront Ave, Singapore 018956")
+waypoints = ("Nairobi", "Athi river")
+"""
+results = gmaps.directions(origin = "Juja", destination = "Mombasa", waypoints = waypoints, optimize_waypoints = True,departure_time=datetime.now() + timedelta(hours=24))
 
-#a place name
-geocode_result = gmaps.geocode("zhongshan park")
+#PLOTTING ROUTES ON GOOGLE MAPS
+#locations = ["Juja", "Nairobi", "Nanyuki", "Embu","Kitui"]
+marker_points = []
+waypoints = []
 
-#Chinese characters
-geocode_result = gmaps.geocode('滨海湾花园')
+#extract the location points from the previous directions function
 
-#place name/restaurant name
-geocode_result = gmaps.geocode('jumbo seafood east coast')
+for leg in results[0]["legs"]:
+    leg_start_loc = leg["start_location"]
+    marker_points.append(f'{leg_start_loc["lat"]},{leg_start_loc["lng"]}')
+    for step in leg["steps"]:
+        end_loc = step["end_location"]
+        waypoints.append(f'{end_loc["lat"]},{end_loc["lng"]}')
+        
+last_stop = results[0]["legs"][-1]["end_location"]
+marker_points.append(f'{last_stop["lat"]},{last_stop["lng"]}')
+        
+markers = [ "color:blue|size:mid|label:" + chr(65+i) + "|" + r for i, r in enumerate(marker_points)]
 
-print(geocode_result[0]["formatted_address"]) 
-print(geocode_result[0]["geometry"]["location"]["lat"]) 
-print(geocode_result[0]["geometry"]["location"]["lng"])
+result_map = gmaps.static_map(center = waypoints[0], scale=2, zoom=7, size=[640, 640], format="jpg", maptype="roadmap", markers=markers,path="color:0x0000ff|weight:2|" + "|".join(waypoints))
+"""
+def map_generator(start, stop, *list_waypoints, hours=24):
+    waypoints=[i for i in list_waypoints]
+    results = gmaps.directions(origin=start, destination=stop, waypoints=waypoints, optimize_waypoints = True, departure_time=datetime.now() + timedelta(hours=hours))
+    
+    marker_points = []
+    waypoints = []
+    for leg in results[0]["legs"]:
+        leg_start_loc = leg["start_location"]
+        marker_points.append(f'{leg_start_loc["lat"]},{leg_start_loc["lng"]}')
+        for step in leg["steps"]:
+            end_loc = step["end_location"]
+            waypoints.append(f'{end_loc["lat"]},{end_loc["lng"]}')
+    
+    last_stop = results[0]["legs"][-1]["end_location"]
+    marker_points.append(f'{last_stop["lat"]},{last_stop["lng"]}')
+    
+    markers = [ "color:blue|size:small|label:" + chr(65+i) + "|" + r for i, r in enumerate(marker_points)]
+    
+    result_map = gmaps.static_map(center = waypoints[0], scale=2, zoom=7, size=[640, 640], format="jpg", maptype="roadmap", markers=markers,path="color:0x0000ff|weight:2|" + "|".join(waypoints))
+    
+    return result_map
 
-reverse_geocode_result = gmaps.reverse_geocode((1.3550021,103.7084641))
+rslt_mp = map_generator('juja', 'kitui', *waypoints)
 
-print(reverse_geocode_result[0]["formatted_address"])
-#'87 Farrer Dr, Singapore 259287'
 
-#GETTING DISTANCES
-from datetime import datetime, timedelta
 
-gmaps.distance_matrix(origins=geocode_result[0]['formatted_address'], 
-                      destinations=reverse_geocode_result[0]["formatted_address"], 
-                      departure_time=datetime.now() + timedelta(minutes=10))
+
+def generate_plots(result_map, map_name=" route_map", no_of_r=1):
+    ext=".jpg"
+    with open(map_name + ext, "wb") as img:
+        for chunk in result_map:
+            img.write(chunk)
+            
+generate_plots(rslt_mp)
