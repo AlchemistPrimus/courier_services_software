@@ -8,6 +8,7 @@ from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
+from .route_planning import map_generator, generate_plots
 
 
 @main.after_app_request
@@ -50,31 +51,34 @@ def index():
     return render_template('index.html', posts=posts,show_followed=show_followed, pagination=pagination)
 
 
-@main.route('/user/<username>')
+@main.route('/user/<username>', methods=['GET', 'POST'])
 def user(username):
     
     form = PostForm()
     form_2 = RoutesForm()
     admin_=current_user._get_current_object()
-    if current_app.config['FLASKY_ADMIN']==admin_.email and \
+    admin_email=admin_.email
+    if current_app.config['FLASKY_ADMIN']==admin_email and \
             form.validate_on_submit():
         post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
                     author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('.user'))
     
-    elif current_app.config['FLASK_ADMIN']==admin_.email and form_2.validate_on_submit():
-        pass
+    elif current_app.config['FLASKY_ADMIN']==admin_email and form_2.validate_on_submit():
+        m_gen=map_generator(form_2.start.data, form_2.end.data, form_2.city1.data, form_2.city2.data, form_2.city3.data, form_2.city4.data)
+        generate_plots(m_gen, form_2.route_name.data)
+        flash("route created successfully")
+        
     
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
-    posts = Post.query.order_by(Post.timestamp.desc()).all()#pagination.items
+    posts = pagination.items #Post.query.order_by(Post.timestamp.desc()).all()
     
-    return render_template('user.html', user=user, form=form, form_2=form_2 posts=posts,
-                           pagination=pagination)
+    return render_template('user.html', user=user, form=form, form_2=form_2,posts=posts, admin_email=admin_email, pagination=pagination)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

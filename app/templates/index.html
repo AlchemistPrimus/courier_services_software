@@ -9,10 +9,7 @@
     <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
 </div>
 <div class="add-post-button">
-    {% if not current_user.can(Permission.WRITE_ARTICLES) %}
-        {% include '_add_item_post.html'%}
-        <!--if is admin-->{%include '_add_routes.html'%}
-    {% endif %}
+    
 </div>
 <div class="posts-baze">
     <h3>Items</h3>

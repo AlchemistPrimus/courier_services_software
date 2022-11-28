@@ -72,6 +72,6 @@ class RoutesForm(FlaskForm):
     city1=StringField('City 1')
     city2=StringField('City 2')
     city3=StringField('City 3')
-    city4=StringField('City4')
+    city4=StringField('City 4')
     end=StringField('End point', validators=[Required()])
     submit=SubmitField('Create Route')

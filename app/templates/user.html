@@ -21,6 +21,12 @@
         {% endif %}
         {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
         <p>Member since {{ moment(user.member_since).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.</p>
+
+        {%if current_user.email==admin_email %}
+            <!--if user is admin-->
+            {% include '_add_item_post.html'%}
+            {%include '_add_routes.html'%}
+        {% endif %}
         <p>{{ user.posts.count() }} blog posts. {{ user.comments.count() }} comments.</p>
         <p>
             {% if current_user.can(Permission.FOLLOW) and user != current_user %}

@@ -67,7 +67,7 @@ def map_generator(start, stop, *list_waypoints, hours=24):
     return result_map
 
 
-def generate_plots(result_map, map_name, no_of_r=1):
+def generate_plots(result_map, map_name):
     ext=".jpg"
     f_loc=folder_loc('static')
     with open(f_loc + map_name + ext, "wb") as img:
