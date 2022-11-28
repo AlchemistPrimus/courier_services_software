@@ -11,6 +11,7 @@
 <div class="add-post-button">
     {% if not current_user.can(Permission.WRITE_ARTICLES) %}
         {% include '_add_item_post.html'%}
+        <!--if is admin-->{%include '_add_routes.html'%}
     {% endif %}
 </div>
 <div class="posts-baze">

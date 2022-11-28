@@ -64,3 +64,14 @@ class PostForm(FlaskForm):
 class CommentForm(FlaskForm):
     body = StringField('Enter your comment', validators=[Required()])
     submit = SubmitField('Submit')
+
+
+class RoutesForm(FlaskForm):
+    route_name=StringField('Enter Route name', validators=[Required()])
+    start=StringField('Start Point', validators=[Required()])
+    city1=StringField('City 1')
+    city2=StringField('City 2')
+    city3=StringField('City 3')
+    city4=StringField('City4')
+    end=StringField('End point', validators=[Required()])
+    submit=SubmitField('Create Route')

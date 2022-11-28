@@ -75,7 +75,7 @@ rslt_mp = map_generator('juja', 'kitui', *waypoints)
 
 def generate_plots(result_map, map_name, no_of_r=1):
     ext=".jpg"
-    f_loc=file_loc('static')
+    f_loc=folder_loc('static')
     with open(f_loc + map_name + ext, "wb") as img:
         for chunk in result_map:
             img.write(chunk)

@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm
+    CommentForm, RoutesForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
@@ -35,6 +35,7 @@ def server_shutdown():
 @main.route('/', methods=['GET', 'POST'])
 def index():
     form = PostForm()
+    form_2 = RoutesForm()
     if not current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
         post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
@@ -53,7 +54,7 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, posts=posts,
+    return render_template('index.html', form=form, form_2=form_2, posts=posts,
                            show_followed=show_followed, pagination=pagination)
 
 

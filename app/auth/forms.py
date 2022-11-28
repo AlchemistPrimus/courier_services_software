@@ -71,7 +71,5 @@ class ChangeEmailForm(FlaskForm):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('Email already registered.')
 
-class RoutesForm(FlaskForm):
-    start=StringField('Start Point', validators=[Required()])
-    end=StringField('End point', validators=[Required()])
-    choices=SelectField(u'Programming Language', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+
+    
