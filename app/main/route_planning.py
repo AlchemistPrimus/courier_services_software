@@ -3,7 +3,7 @@ import googlemaps
 from datetime import datetime, timedelta
 import os
 import re
-
+gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
 #locating parent directory
 
 basedir=os.path.dirname(__file__)
@@ -41,10 +41,8 @@ def find_file(file_dir_name):
 
 
 
-gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
 
 
-waypoints = ("Nairobi", "Athi river")
 
 def map_generator(start, stop, *list_waypoints, hours=24):
     waypoints=[i for i in list_waypoints]
@@ -68,10 +66,6 @@ def map_generator(start, stop, *list_waypoints, hours=24):
     
     return result_map
 
-rslt_mp = map_generator('juja', 'kitui', *waypoints)
-
-
-
 
 def generate_plots(result_map, map_name, no_of_r=1):
     ext=".jpg"
@@ -80,4 +74,4 @@ def generate_plots(result_map, map_name, no_of_r=1):
         for chunk in result_map:
             img.write(chunk)
             
-generate_plots(rslt_mp)
+

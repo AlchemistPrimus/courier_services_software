@@ -34,14 +34,7 @@ def server_shutdown():
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    form = PostForm()
-    form_2 = RoutesForm()
-    if not current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        return redirect(url_for('.index'))
+    
     page = request.args.get('page', 1, type=int)
     show_followed = False
     if current_user.is_authenticated:
@@ -54,12 +47,25 @@ def index():
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', form=form, form_2=form_2, posts=posts,
-                           show_followed=show_followed, pagination=pagination)
+    return render_template('index.html', posts=posts,show_followed=show_followed, pagination=pagination)
 
 
 @main.route('/user/<username>')
 def user(username):
+    
+    form = PostForm()
+    form_2 = RoutesForm()
+    admin_=current_user._get_current_object()
+    if current_app.config['FLASKY_ADMIN']==admin_.email and \
+            form.validate_on_submit():
+        post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
+                    author=current_user._get_current_object())
+        db.session.add(post)
+        return redirect(url_for('.user'))
+    
+    elif current_app.config['FLASK_ADMIN']==admin_.email and form_2.validate_on_submit():
+        pass
+    
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
@@ -67,7 +73,7 @@ def user(username):
         error_out=False)
     posts = Post.query.order_by(Post.timestamp.desc()).all()#pagination.items
     
-    return render_template('user.html', user=user, posts=posts,
+    return render_template('user.html', user=user, form=form, form_2=form_2 posts=posts,
                            pagination=pagination)
 
 
