@@ -56,16 +56,15 @@ def user(username):
     
     form = PostForm()
     form_2 = RoutesForm()
-    admin_=current_user._get_current_object()
-    admin_email=admin_.email
-    if current_app.config['FLASKY_ADMIN']==admin_email and \
+    admin_name="admincourier"
+    if username==admin_name and \
             form.validate_on_submit():
         post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
                     author=current_user._get_current_object())
         db.session.add(post)
-        return redirect(url_for('.user'))
+        flash("Item added successfully")
     
-    elif current_app.config['FLASKY_ADMIN']==admin_email and form_2.validate_on_submit():
+    elif username==admin_name and form_2.validate_on_submit():
         m_gen=map_generator(form_2.start.data, form_2.end.data, form_2.city1.data, form_2.city2.data, form_2.city3.data, form_2.city4.data)
         generate_plots(m_gen, form_2.route_name.data)
         flash("route created successfully")
@@ -78,7 +77,7 @@ def user(username):
         error_out=False)
     posts = pagination.items #Post.query.order_by(Post.timestamp.desc()).all()
     
-    return render_template('user.html', user=user, form=form, form_2=form_2,posts=posts, admin_email=admin_email, pagination=pagination)
+    return render_template('user.html', user=user, form=form, form_2=form_2,posts=posts, admin_name=admin_name, pagination=pagination)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])
@@ -86,13 +85,13 @@ def user(username):
 def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
-        current_user.name = form.name.data
+        #current_user.name = form.name.data
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
         db.session.add(current_user)
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
-    form.name.data = current_user.name
+    #form.name.data = current_user.name
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form)
