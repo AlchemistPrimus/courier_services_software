@@ -8,7 +8,7 @@ from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
-from .route_planning import map_generator, generate_plots
+from .route_planning import map_generator, generate_plots, find_file, folder_loc
 
 
 @main.after_app_request
@@ -57,6 +57,10 @@ def user(username):
     form = PostForm()
     form_2 = RoutesForm()
     admin_name="admincourier"
+    drivers=['Mombasa', 'kibwezi', 'Molo', 'Mwingi']
+    
+    f=folder_loc('static')
+    geo_images=find_file(f)
     if username==admin_name and \
             form.validate_on_submit():
         post = Post(name=form.name.data, quantity=form.quantity.data, destination=form.destination.data, r_email=form.r_email.data, id_no=form.id_no.data, phone_no=form.phone_no.data, body=form.body.data,
@@ -77,7 +81,7 @@ def user(username):
         error_out=False)
     posts = pagination.items #Post.query.order_by(Post.timestamp.desc()).all()
     
-    return render_template('user.html', user=user, form=form, form_2=form_2,posts=posts, admin_name=admin_name, pagination=pagination)
+    return render_template('user.html', user=user, drivers=drivers, form=form, form_2=form_2,posts=posts, geo_images=geo_images, admin_name=admin_name, pagination=pagination)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

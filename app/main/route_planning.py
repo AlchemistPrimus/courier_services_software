@@ -5,11 +5,6 @@ import os
 import re
 gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
 #locating parent directory
-
-basedir=os.path.dirname(__file__)
-parent=os.path.dirname(basedir)
-print(parent)
-
 #WILL BE USED TO SAVE IMAGES   
 #locate a directory and add file to it
 def folder_loc(folder):

@@ -27,7 +27,7 @@
             {% include '_add_item_post.html'%}
             {%include '_add_routes.html'%}
         {% endif %}
-        <p>{{ user.posts.count() }} items. {{ user.comments.count() }} comments.</p>
+        <p>{{ user.posts.count() }} items.</p>
         
         <p>
             {% if user == current_user %}
@@ -46,5 +46,9 @@
     {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
 </div>
 {% endif %}
-<img src="{{url_for('static', filename='map_images/kibwezi.jpg')}}"/>
+{% for g in geo_images %}
+    {% if user.username==g[1]%}
+        <img src="{{url_for('static', filename='map_images/'+user.username+'.jpg')}}"/>
+    {% endif %}
+{% endfor %}
 {% endblock %}
