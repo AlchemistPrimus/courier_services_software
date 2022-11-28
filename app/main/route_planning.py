@@ -64,3 +64,35 @@ def generate_plots(result_map, map_name=" route_map", no_of_r=1):
             img.write(chunk)
             
 generate_plots(rslt_mp)
+
+import os
+import re
+
+
+
+    
+#locate file folder
+def file_loc(folder):
+    """takes the folder returns a string of it's location"""
+    basedir=os.path.dirname(__file__)
+    file_folder=os.path.join(basedir,folder)
+    if not file_folder.endswith('/'):
+        return file_folder + "/"
+    else:
+        return file_folder
+
+#list file paths
+def files_path(file_dir_name):
+    """Takes directory and lists the file paths."""
+    f_=os.listdir(file_dir_name)
+    files_list=[]
+    files_names=[]
+    for i in f_:
+        file_path=os.path.join(file_dir_name,i)
+        name=os.path.splitext(i)[0]
+        files_list.append(file_path)
+        files_names.append(name)
+    file_n=list(zip(files_list,files_names))
+    return file_n
+
+#print(files_path(f))
