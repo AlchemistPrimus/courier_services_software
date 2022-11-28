@@ -4,18 +4,26 @@ from datetime import datetime, timedelta
 import os
 import re
 
+#locating parent directory
 
+basedir=os.path.dirname(__file__)
+parent=os.path.dirname(basedir)
+print(parent)
 
-    
-#locate file folder
+#WILL BE USED TO SAVE IMAGES   
+#locate a directory and add file to it
 def file_loc(folder):
-    """takes the folder returns a string of it's location"""
+    """takes a folder name(this folder is in parent directory) and return string representation of its location"""
     basedir=os.path.dirname(__file__)
-    file_folder=os.path.join(basedir,folder)
+    parent=os.path.dirname(basedir)
+    file_folder=os.path.join(parent,folder)
     if not file_folder.endswith('/'):
-        return file_folder + "/"
+        return file_folder + "/map_images/"
     else:
         return file_folder
+    
+f=file_loc("static")
+print(f"Images folder is {f}")
 
 #list file paths
 def files_path(file_dir_name):
@@ -32,9 +40,9 @@ def files_path(file_dir_name):
     return file_n
 
 f='__pycache__'
-print(files_path(f))
+#print(files_path(f))
 
-"""
+
 gmaps = googlemaps.Client(key='AIzaSyBainUCQKRqOgSDsXOtYqpQDo4gv4fRwQE')
 
 
@@ -62,17 +70,16 @@ def map_generator(start, stop, *list_waypoints, hours=24):
     
     return result_map
 
-#rslt_mp = map_generator('juja', 'kitui', *waypoints)
+rslt_mp = map_generator('juja', 'kitui', *waypoints)
 
 
 
 
-def generate_plots(result_map, map_name=" route_map", no_of_r=1):
+def generate_plots(result_map, map_name, no_of_r=1):
     ext=".jpg"
-    with open(map_name + ext, "wb") as img:
+    f_loc=file_loc('static')
+    with open(f_loc + map_name + ext, "wb") as img:
         for chunk in result_map:
             img.write(chunk)
             
-#generate_plots(rslt_mp)
-
-"""
+generate_plots(rslt_mp)
