@@ -35,20 +35,14 @@ def server_shutdown():
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    
+    admin_name="admincourier"
     page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-    if show_followed:
-        query = current_user.followed_posts
-    else:
-        query = Post.query
+    query = Post.query
     pagination = query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],
         error_out=False)
     posts = pagination.items
-    return render_template('index.html', posts=posts,show_followed=show_followed, pagination=pagination)
+    return render_template('index.html')
 
 
 @main.route('/user/<username>', methods=['GET', 'POST'])
@@ -87,7 +81,10 @@ def user(username):
         error_out=False)
     posts = pagination.items #Post.query.order_by(Post.timestamp.desc()).all()
     
-    return render_template('user.html', user=user, drivers=drivers, form=form, form_2=form_2,posts=posts, form_3=form_3, result=result, geo_images=geo_images, admin_name=admin_name, pagination=pagination)
+    next_url = url_for('.index', page=pagination.next_num) if pagination.has_next else None
+    prev_url = url_for('.index', page=pagination.prev_num) if pagination.has_prev else None
+    
+    return render_template('user.html', user=user, drivers=drivers, form=form, form_2=form_2,posts=posts, next_url=next_url, prev_url=prev_url, form_3=form_3, result=result, geo_images=geo_images, admin_name=admin_name, pagination=pagination)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

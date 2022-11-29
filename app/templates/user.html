@@ -39,14 +39,23 @@
         </p>
     </div>
 </div>
-<h3>Route {{ user.username }}</h3>
-{% include '_posts.html' %}
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
-</div>
+<h3>Items</h3>
+{% if user.username==admin_name%}
+    {% for post in posts%}
+        {% include '_posts.html' %}
+    {% endfor %}
 {% endif %}
+<div class="pagination">
+    <!--{{ macros.pagination_widget(pagination, '.user', username=userusername) }}-->
+    {% if prev_url%}
+        <a href="{{prev_url}}">prev</a>
+    {% endif %}
+    {%if next_url %}
+        <a href="{{next_url}}">next</a>
+    {% endif %}
+</div>
 
+<h3>Route {{ user.username }}</h3>
 {% for g in geo_images %}
     {% if user.username==g[1]%}
         <img src="{{url_for('static', filename='map_images/'+user.username+'.jpg')}}"/>
