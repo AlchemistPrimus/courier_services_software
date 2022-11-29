@@ -4,33 +4,46 @@
 
 {% block title %}Flasky{% endblock %}
 
+{% block style%}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename="index_style.css")}}">
+{% endblock %}
+
 {% block page_content %}
-<div class="page-header">
-    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+
+<div class="container-fluid courier-body">
+    <div class="row main-row">
+        <div class="col-md-5 col_1">
+            <h3>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Friend{% endif %}! Have you heard about us?</h3>
+            <h1>Welcome to World Wide Courier Services</h1>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-5">
+            
+            <div class="card intro-card">
+                <div class="card-header">
+                    <h3 class="card-title">Exemplary Service Is Our Niche!</h3>
+                </div>
+                <div class="card-block intro-card-body">
+                    <p class="card-text">Get started with world wide courier services.
+                    Get your luggages delivered across the country. We are your best messanger.</p>
+                    {% if not current_user.is_authenticated%}
+                        <p><a class="btn btn-primary" href="{{ url_for('auth.login') }}">Get Started</a></p>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="add-post-button">
-    
-</div>
-<div class="posts-baze">
-    
-    
-</div>
-<!--
-<div class="post-tabs">
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
-        {% if current_user.is_authenticated %}
-        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">Followers</a></li>
-        {% endif %}
-    </ul>
-    {% include '_posts.html' %}
-</div>
--->
 {% if pagination %}
 <div class="pagination">
     {{ macros.pagination_widget(pagination, '.index') }}
 </div>
 {% endif %}
+
+{% block footer%}
+<p><b>&copy;2022 world wide courier</b> Terms &amp; Conditions | Privacy </p>
+{% endblock %}
 {% endblock %}
 
 {% block scripts %}
