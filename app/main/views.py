@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm, RoutesForm
+    CommentForm, RoutesForm, SearchForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
@@ -56,9 +56,10 @@ def user(username):
     
     form = PostForm()
     form_2 = RoutesForm()
+    form_3=SearchForm()
     admin_name="admincourier"
     drivers=['Mombasa', 'kibwezi', 'Molo', 'Mwingi']
-    
+    result=None
     f=folder_loc('static')
     geo_images=find_file(f)
     if username==admin_name and \
@@ -71,7 +72,12 @@ def user(username):
     elif username==admin_name and form_2.validate_on_submit():
         m_gen=map_generator(form_2.start.data, form_2.end.data, form_2.city1.data, form_2.city2.data, form_2.city3.data, form_2.city4.data)
         generate_plots(m_gen, form_2.route_name.data)
+        drivers.append(form_2.route_name.data)
         flash("route created successfully")
+        
+    elif form_3.validate_on_submit():
+        if form_3.input_field.data in drivers:
+            result=form_3.input_field.data
         
     
     user = User.query.filter_by(username=username).first_or_404()
@@ -81,7 +87,7 @@ def user(username):
         error_out=False)
     posts = pagination.items #Post.query.order_by(Post.timestamp.desc()).all()
     
-    return render_template('user.html', user=user, drivers=drivers, form=form, form_2=form_2,posts=posts, geo_images=geo_images, admin_name=admin_name, pagination=pagination)
+    return render_template('user.html', user=user, drivers=drivers, form=form, form_2=form_2,posts=posts, form_3=form_3, result=result, geo_images=geo_images, admin_name=admin_name, pagination=pagination)
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

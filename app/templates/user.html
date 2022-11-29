@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% import "_macros.html" as macros %}
-
+{% import "bootstrap/wtf.html" as wtf%}
 {% block title %}Flasky - {{ user.username }}{% endblock %}
 
 {% block page_content %}
@@ -39,16 +39,38 @@
         </p>
     </div>
 </div>
-<h3>Posts by {{ user.username }}</h3>
+<h3>Route {{ user.username }}</h3>
 {% include '_posts.html' %}
 {% if pagination %}
 <div class="pagination">
     {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
 </div>
 {% endif %}
+
 {% for g in geo_images %}
     {% if user.username==g[1]%}
         <img src="{{url_for('static', filename='map_images/'+user.username+'.jpg')}}"/>
     {% endif %}
 {% endfor %}
+{% if user.username not in drivers %}
+    <p>Available routes</p>
+        {% if drivers%}
+            {% for i in drivers%}
+                {{i}}
+            {% endfor %}
+        {% else %}
+            No available route
+        {% endif %}
+        <form action="" method="post">
+            {{form_2.hidden_tag()}}
+            <p>
+                {{form_3.input_field.label}}
+                {{form_3.input_field(size=32)}}
+                {{form_3.search()}}
+            </p>
+        </form>
+        {% if result %}
+            <img src="{{url_for('static', filename='map_images/'+result+'.jpg')}}"/>
+        {% endif %}
+{% endif %}
 {% endblock %}

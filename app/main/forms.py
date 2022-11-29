@@ -15,7 +15,7 @@ class NameForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     #name = StringField('Real name', validators=[Length(0, 64)])
     location = StringField('Location', validators=[Length(0, 64)])
-    about_me = TextAreaField('About me')
+    about_me = TextAreaField('About')
     submit = SubmitField('Update')
 
 
@@ -75,3 +75,7 @@ class RoutesForm(FlaskForm):
     city4=StringField('City 4')
     end=StringField('End point', validators=[Required()])
     submit=SubmitField('Create Route')
+    
+class SearchForm(FlaskForm):
+    input_field=StringField("Enter route from above options")
+    search=SubmitField("Load route")
