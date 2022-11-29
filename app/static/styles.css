@@ -157,3 +157,56 @@ div.flask-pagedown-preview h3 {
     -webkit-box-shadow: 2px 1px 138px -6px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 2px 1px 138px -6px rgba(0, 0, 0, 0.75);
 }
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    text-shadow: 3px 2px 12px rgba(10, 4, 3, 0.92);
+}
+
+.login-card {
+    padding: 2em;
+    box-shadow: 2px 1px 138px -6px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 2px 1px 138px -6px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 2px 1px 138px -6px rgba(0, 0, 0, 0.75);
+}
+
+img.profile-p {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+img.map {
+    padding: .5em;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.items-col {
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+.mapper {
+    max-width: 100%;
+    max-height: 70vh;
+    display: block;
+}
+
+.post-item-title {
+    color: rgb(44, 153, 11);
+}
+
+.post-body {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+
+.footer-text {
+    padding: 1em;
+}
+
+.profile-col {
+    padding-top: 1.5em;
+}

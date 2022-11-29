@@ -28,7 +28,7 @@
                     <p class="card-text">Get started with world wide courier services.
                     Get your luggages delivered across the country. We are your best messanger.</p>
                     {% if not current_user.is_authenticated%}
-                        <p><a class="btn btn-primary" href="{{ url_for('auth.login') }}">Get Started</a></p>
+                        <p><a class="btn btn-success" href="{{ url_for('auth.login') }}">Get Started</a></p>
                     {%endif%}
                 </div>
             </div>

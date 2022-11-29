@@ -4,82 +4,94 @@
 {% block title %}Flasky - {{ user.username }}{% endblock %}
 
 {% block page_content %}
-<div class="page-header">
-    <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
-    <div class="profile-header">
-        <h1>{{ user.username }}</h1>
-        {% if user.name or user.location %}
-        <p>
-            {% if user.name %}{{ user.name }}<br>{% endif %}
-            {% if user.location %}
-                now at <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a><br>
-            {% endif %}
-        </p>
-        {% endif %}
-        {% if current_user.is_administrator() %}
-        <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
-        {% endif %}
-        {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-        <p>Today's deliveries | date: {{ moment(user.member_since).format('L') }}.</br>Started {{ moment(user.last_seen).fromNow() }}.</p>
-
-        {%if user.username==admin_name %}
-            <!--if user is admin-->
-            {% include '_add_item_post.html'%}
-            {%include '_add_routes.html'%}
-        {% endif %}
-        <p>{{ user.posts.count() }} items.</p>
-        
-        <p>
-            {% if user == current_user %}
-            <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Update location</a>
+<div class="row">
+    <div class="col-md-2 profile_col">
+        <div class="row">
+            <img class="img-circle profile-p" src="{{ user.gravatar() }}">
+            <h3>{{ user.username }}</h3>
+            {% if user.name or user.location %}
+            <p>
+                {% if user.name %}{{ user.name }}<br>{% endif %}
+                {% if user.location %}
+                    now at <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a><br>
+                {% endif %}
+            </p>
             {% endif %}
             {% if current_user.is_administrator() %}
-            <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+            <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
             {% endif %}
-        </p>
-    </div>
-</div>
-<h3>Items</h3>
-{% if user.username==admin_name%}
-    {% for post in posts%}
-        {% include '_posts.html' %}
-    {% endfor %}
-{% endif %}
-<div class="pagination">
-    <!--{{ macros.pagination_widget(pagination, '.user', username=userusername) }}-->
-    {% if prev_url%}
-        <a href="{{prev_url}}">prev</a>
-    {% endif %}
-    {%if next_url %}
-        <a href="{{next_url}}">next</a>
-    {% endif %}
-</div>
+            {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+            <p>Today's deliveries | date: {{ moment(user.member_since).format('L') }}.</br>Started {{ moment(user.last_seen).fromNow() }}.</p>
 
-<h3>Route {{ user.username }}</h3>
-{% for g in geo_images %}
-    {% if user.username==g[1]%}
-        <img src="{{url_for('static', filename='map_images/'+user.username+'.jpg')}}"/>
-    {% endif %}
-{% endfor %}
-{% if user.username not in drivers %}
-    <p>Available routes</p>
-        {% if drivers%}
-            {% for i in drivers%}
-                {{i}}
-            {% endfor %}
-        {% else %}
-            No available route
-        {% endif %}
-        <form action="" method="post">
-            {{form_2.hidden_tag()}}
+            <p>{{ user.posts.count() }} items.</p>
+            
             <p>
-                {{form_3.input_field.label}}
-                {{form_3.input_field(size=32)}}
-                {{form_3.search()}}
+                {% if user == current_user %}
+                <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Update location</a>
+                {% endif %}
+                {% if current_user.is_administrator() %}
+                <a class="btn btn-danger" href="{{ url_for('.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+                {% endif %}
             </p>
-        </form>
-        {% if result %}
-            <img src="{{url_for('static', filename='map_images/'+result+'.jpg')}}"/>
+        </div>
+        <div class="row">
+            {%if user.username==admin_name %}
+                <!--if user is admin-->
+                {% include '_add_item_post.html'%}
+                {%include '_add_routes.html'%}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-6 map-route">
+        <h3>Route {{ user.username }}</h3>
+        {% for g in geo_images %}
+            {% if user.username==g[1]%}
+                <div class="map">
+                    <img class="mapper" src="{{url_for('static', filename='map_images/'+user.username+'.jpg')}}"/>
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if user.username not in drivers %}
+            <p>Available routes</p>
+                {% if drivers%}
+                    <ul class="list-inline">
+                    {% for i in drivers%}
+                        <li>{{i}}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    No available route
+                {% endif %}
+                <form action="" method="post">
+                    {{form_2.hidden_tag()}}
+                    <p>
+                        {{form_3.input_field.label}}
+                        {{form_3.input_field(size=32)}}
+                        {{form_3.search()}}
+                    </p>
+                </form>
+                {% if result %}
+                    <div class="map">
+                        <img class="mapper" src="{{url_for('static', filename='map_images/'+result+'.jpg')}}"/>
+                    </div>
+                {% endif %}
         {% endif %}
-{% endif %}
+    </div>
+
+    <div class="col-md-4 items-col">
+        <h3>Items</h3>
+        {% if user.username==admin_name%}
+            {% for post in posts%}
+                {% include '_posts.html' %}
+            {% endfor %}
+        {%else%}
+            <p>your parcel is on the way</p>
+        {% endif %}
+        
+    </div>
+{% block footer%}
+<p class="footer-text"><b>&copy;2022 world wide courier</b> Terms &amp; Conditions | Privacy </p>
+{% endblock %}
+</div>
 {% endblock %}
