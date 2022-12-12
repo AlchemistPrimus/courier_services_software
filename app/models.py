@@ -343,6 +343,16 @@ class Post(db.Model):
         if body is None or body == '':
             raise ValidationError('post does not have a body')
         return Post(body=body)
+    
+class Routes(db.Model):
+    __tablename__= 'routes'
+    id = db.Column(db.Integer, primary_key=True)
+    cities_start=db.Column(db.String(64))
+    cities_stop=db.Column(db.String(64))
+    drivers=db.Column(db.String(64))
+    author_id=db.Column(db.Integer, db.ForeignKey('users.id'))
+    route_id=db.Column(db.Integer, db.ForeignKey('posts.id'))
+    
 
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)

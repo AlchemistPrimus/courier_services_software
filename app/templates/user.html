@@ -58,7 +58,7 @@
                 {% if drivers%}
                     <ul class="list-inline">
                     {% for i in drivers%}
-                        <li>{{i}}</li>
+                        <li>{{i.drivers}}</li>
                     {% endfor %}
                     </ul>
                 {% else %}
@@ -74,7 +74,7 @@
                 </form>
                 {% if result %}
                     <div class="map">
-                        <img class="mapper" src="{{url_for('static', filename='map_images/'+result+'.jpg')}}"/>
+                        <img class="mapper" src="{{url_for('static', filename='map_images/'+result.drivers+'.jpg')}}"/>
                     </div>
                 {% endif %}
         {% endif %}
@@ -87,7 +87,7 @@
                 {% include '_posts.html' %}
             {% endfor %}
         {%else%}
-            <p>your parcel is on the way</p>
+            <p>parcel is on transit</p>
         {% endif %}
         
     </div>

@@ -6,9 +6,10 @@ from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
     CommentForm, RoutesForm, SearchForm
 from .. import db
-from ..models import Permission, Role, User, Post, Comment
+from ..models import Permission, Role, User, Post, Comment, Routes
 from ..decorators import admin_required, permission_required
 from .route_planning import map_generator, generate_plots, find_file, folder_loc
+from fpdf import FPDF
 
 
 @main.after_app_request
@@ -44,7 +45,7 @@ def index():
     posts = pagination.items
     return render_template('index.html')
 
-
+#dynamic route to access user page, takes username as the parameter
 @main.route('/user/<username>', methods=['GET', 'POST'])
 def user(username):
     
@@ -52,7 +53,7 @@ def user(username):
     form_2 = RoutesForm()
     form_3=SearchForm()
     admin_name="admincourier"
-    drivers=['Mombasa', 'kibwezi', 'Molo', 'Mwingi']
+    drivers=Routes.query.all()
     result=None
     f=folder_loc('static')
     geo_images=find_file(f)
@@ -65,15 +66,21 @@ def user(username):
     
     elif username==admin_name and form_2.validate_on_submit():
         m_gen=map_generator(form_2.start.data, form_2.end.data, form_2.city1.data, form_2.city2.data, form_2.city3.data, form_2.city4.data)
+        start_and_stop={'start': form_2.start.data, 'stop': form_2.end.data}
+        
+        routes_=Routes(cities_start=form_2.start.data, cities_stop=form_2.end.data, drivers=form_2.end.data)
+        db.session.add(routes_)
         generate_plots(m_gen, form_2.route_name.data)
-        drivers.append(form_2.route_name.data)
         flash("route created successfully")
         
     elif form_3.validate_on_submit():
-        if form_3.input_field.data in drivers:
-            result=form_3.input_field.data
+        result=Routes.query.filter_by(drivers=form_3.input_field.data).first()
+        if result:
+            result=result
+        else:
+            flash("Route not available check the available routes.")
+            
         
-    
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
@@ -96,6 +103,7 @@ def edit_profile():
         current_user.location = form.location.data
         current_user.about_me = form.about_me.data
         db.session.add(current_user)
+        db.session.commit()
         flash('Your profile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
     #form.name.data = current_user.name
@@ -119,6 +127,7 @@ def edit_profile_admin(id):
         user.location = form.location.data
         user.about_me = form.about_me.data
         db.session.add(user)
+        db.session.commit()
         flash('The profile has been updated.')
         return redirect(url_for('.user', username=user.username))
     form.email.data = user.email
@@ -140,6 +149,7 @@ def post(id):
                           post=post,
                           author=current_user._get_current_object())
         db.session.add(comment)
+        db.session.commit()
         flash('Your comment has been published.')
         return redirect(url_for('.post', id=post.id, page=-1))
     page = request.args.get('page', 1, type=int)
@@ -165,6 +175,7 @@ def edit(id):
     if form.validate_on_submit():
         post.body = form.body.data
         db.session.add(post)
+        db.session.commit()
         flash('The post has been updated.')
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
@@ -286,3 +297,47 @@ def moderate_disable(id):
     db.session.add(comment)
     return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
+
+@main.route('/download/report/pdf/<int:id>')
+@login_required
+def download_report(id):
+    #query the data base for the results to be added to pdf
+    report_=Post.query.get(id)
+    if report_:
+        pdf = FPDF()
+        pdf.add_page()
+        page_width = pdf.w - 2 * pdf.l_margin
+        pdf.set_font('Times','B',14.0) 
+        pdf.cell(page_width, 0.0, 'World Wide courier report', align='C')
+        pdf.ln(10)
+        
+        pdf.set_font('Courier', '', 12)
+        
+        col_width = page_width/4
+        pdf.ln(1)
+        th = pdf.font_size
+        
+        
+        pdf.cell(col_width, th, report_.name, border=1)
+        pdf.cell(col_width, th, str(report_.quantity), border=1)
+        pdf.cell(col_width, th, report_.destination, border=1)
+        #Recipient's details
+        pdf.cell(col_width, th, report_.r_email, border=1)
+        pdf.cell(col_width, th, str(report_.id_no), border=1)
+        pdf.cell(col_width, th, str(report_.phone_no), border=1)
+        pdf.cell(col_width, th, report_.body, border=1)
+        pdf.ln(th)
+            
+        pdf.ln(10)
+		
+        pdf.set_font('Times','',10.0) 
+        pdf.cell(page_width, 0.0, '- end of report -', align='C')
+        pdf.output(name="report.pdf", dest='F').encode('latin-1')
+        flash("Report printed")
+        return redirect(url_for('.email_report', username=current_user))
+    return render_template('report_doc.html', id=id)
+
+@main.route('/email_report')
+@login_required
+def email_report():
+    return render_template("email_report.html")
