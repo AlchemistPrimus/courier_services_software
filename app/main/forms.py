@@ -58,8 +58,12 @@ class PostForm(FlaskForm):
     id_no = StringField("Recipient ID no.", validators=[Required()])
     phone_no = StringField("Recipient Tel", validators=[Required()])
     body = PageDownField("Other item descriptions?", validators=[Required()])
+    status = BooleanField('Shipping status')
     submit = SubmitField('Submit')
 
+class EditPostForm(FlaskForm):
+    status=BooleanField('Shipping Status.')
+    submit = SubmitField('Confirm')
 
 class CommentForm(FlaskForm):
     body = StringField('Enter your comment', validators=[Required()])

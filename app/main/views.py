@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm, RoutesForm, SearchForm
+    CommentForm, RoutesForm, SearchForm, EditPostForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment, Routes
 from ..decorators import admin_required, permission_required
@@ -171,14 +171,14 @@ def edit(id):
     if current_user != post.author and \
             not current_user.can(Permission.ADMINISTER):
         abort(403)
-    form = PostForm()
+    form = EditPostForm()
     if form.validate_on_submit():
-        post.body = form.body.data
+        post.statue =form.status.data
         db.session.add(post)
         db.session.commit()
-        flash('The post has been updated.')
+        flash('Updated.')
         return redirect(url_for('.post', id=post.id))
-    form.body.data = post.body
+    form.status.data = post.statue
     return render_template('edit_post.html', form=form)
 
 
@@ -312,20 +312,30 @@ def download_report(id):
         pdf.ln(10)
         
         pdf.set_font('Courier', '', 12)
+        pdf.cell(page_width, 0.0, "Item", align='C')
         
-        col_width = page_width/4
-        pdf.ln(1)
+        col_width = page_width/3
+        
+        pdf.ln(5)
         th = pdf.font_size
         
         
         pdf.cell(col_width, th, report_.name, border=1)
         pdf.cell(col_width, th, str(report_.quantity), border=1)
         pdf.cell(col_width, th, report_.destination, border=1)
+        
+        pdf.ln(10)
+        
+        pdf.cell(page_width, 0.0, "Recipient's details", align='C')
+        
+        pdf.ln(5)
+        col2_width=page_width/4
         #Recipient's details
-        pdf.cell(col_width, th, report_.r_email, border=1)
-        pdf.cell(col_width, th, str(report_.id_no), border=1)
-        pdf.cell(col_width, th, str(report_.phone_no), border=1)
-        pdf.cell(col_width, th, report_.body, border=1)
+        
+        pdf.cell(col2_width, th, report_.r_email, border=1)
+        pdf.cell(col2_width, th, str(report_.id_no), border=1)
+        pdf.cell(col2_width, th, str(report_.phone_no), border=1)
+        pdf.cell(col2_width, th, report_.body, border=1)
         pdf.ln(th)
             
         pdf.ln(10)

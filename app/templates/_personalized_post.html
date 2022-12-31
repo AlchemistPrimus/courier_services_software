@@ -5,6 +5,15 @@
             <table class="table card-text">
                 <th><span class="post-item-title">Item</span></th>
                 <tr>
+                   {%if post.statue %}
+                        <td style="color:green;">received</td>
+
+                    {%else%}
+
+                        <td style="color:orange">enroute</td>
+                    {%endif%}
+                </tr>
+                <tr>
                     <td><b>Item name:</b></td><td>{{post.name}}</td>
                 </tr>
                 <tr>

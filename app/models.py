@@ -294,6 +294,7 @@ class Post(db.Model):
     r_email = db.Column(db.String(64))
     id_no=db.Column(db.String(64))
     phone_no = db.Column(db.String(64))
+    statue=db.Column(db.Boolean, default=False)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
