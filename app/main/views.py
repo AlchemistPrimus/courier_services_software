@@ -337,12 +337,21 @@ def download_report(id):
         pdf.cell(col2_width, th, str(report_.phone_no), border=1)
         pdf.cell(col2_width, th, report_.body, border=1)
         pdf.ln(th)
+        
+        
+        pdf.ln(10)
+        
+        pdf.cell(page_width, 0.0, "Status", align='C')
+        
+        pdf.ln(5)
+        
+        pdf.cell(page_width, 0.0, f"Received {report_.statue}", align='C')
             
         pdf.ln(10)
 		
         pdf.set_font('Times','',10.0) 
         pdf.cell(page_width, 0.0, '- end of report -', align='C')
-        pdf.output(name="report.pdf", dest='F').encode('latin-1')
+        pdf.output(name=f"{report_.name} report.pdf", dest='F').encode('latin-1')
         flash("Report printed")
         return redirect(url_for('.email_report', username=current_user))
     return render_template('report_doc.html', id=id)
